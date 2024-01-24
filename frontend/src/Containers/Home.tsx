@@ -1,8 +1,12 @@
 import SendForm from '../Components/SendForm/SendForm';
 import {Dispatch, FormEvent, SetStateAction, useState} from 'react';
 import {IMessageForm} from '../types';
+import {addMessage} from '../store/MessagesThunk';
+import {AppDispatch} from '../app/store';
+import {useDispatch} from 'react-redux';
 
 const Home = () => {
+  const dispatch: AppDispatch = useDispatch();
   const [error, setError] = useState(false);
 
   const addNewMessageRequest = async (e: FormEvent, message: IMessageForm, setMessage: Dispatch<SetStateAction<IMessageForm>>) => {
@@ -19,7 +23,7 @@ const Home = () => {
         formData.append('image', message.image);
       }
 
-      console.log(formData)
+      await dispatch(addMessage(formData));
 
       setMessage((prev) => ({
         ...prev,
