@@ -18,7 +18,7 @@ const fileDb = {
     async addMessageToJson(message: MessageWithoutID) {
         const id = crypto.randomUUID();
         const date = new Date().toISOString();
-        const newMessage = {id, date, ...message}
+        const newMessage = {...message, id, date}
 
         data.push(newMessage);
         await this.save();
@@ -27,7 +27,21 @@ const fileDb = {
     },
     async save() {
         return fs.writeFile(fileName, JSON.stringify(data));
-    }
+    },
+    async getMessages() {
+        return data;
+    },
+    getByQueryDatetime(datetime: Date): IMessages[] {
+        let lastMessages: IMessages[] = [];
+
+        data.forEach(message => {
+            if (new Date(message.date) > datetime) {
+                lastMessages.push(message);
+            }
+        });
+
+        return lastMessages;
+    },
 };
 
 export default fileDb;
